@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
+
+    <style>
+        .valido {
+            border: 2px solid green;
+        }
+
+        .invalido {
+            border: 2px solid red;
+        }
+
+        .label-valido {
+            color: green;
+            border: 2px solid green;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .label-invalido {
+            color: red;
+            border: 2px solid red;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+
+<body class="bg-light">
+    <div class="container my-5">
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Cadastro de Usuário</h4>
+            </div>
+            <div class="card-body">
+                <form id="formCadastro">
+                    <!-- Campo Nome Completo -->
+                    <div class="mb-3">
+                        <label for="inputNome" class="form-label">Nome Completo</label>
+                        <input type="text" class="form-control" id="inputNome" placeholder="Digite seu nome completo"
+                            required>
+                    </div>
+
+                    <!-- Campo Data Nascimento -->
+                    <div class="mb-3">
+                        <label for="inputNascimento" class="form-label">Data de Nascimento</label>
+                        <input type="date" class="form-control" id="inputNascimento" required>
+                        <div id="nascimentoValidation" class="mt-2"></div>
+                    </div>
+
+                    <!-- Escolha entre CPF ou RG -->
+                    <div class="mb-3">
+                        <label for="tipoDocumento" class="form-label">Escolha o Documento</label>
+                        <select id="tipoDocumento" class="form-select">
+                            <option value="cpf">CPF</option>
+                            <option value="rg">RG</option>
+                        </select>
+                    </div>
+
+                    <!-- Campo CPF/RG -->
+                    <div class="mb-3">
+                        <label for="inputDocumento" class="form-label" id="labelDocumento">CPF</label>
+                        <input type="text" class="form-control" id="inputDocumento" placeholder="000.000.000-00"
+                            required>
+                        <p id="erroDocumento" class="erro"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="inputEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="nome@exemplo.com"
+                            required>
+                        <div id="emailValidation" class="mt-2"></div>
+                    </div>
+
+                    <!-- Campo Senha -->
+                    <div class="mb-3">
+                        <label for="inputSenha" class="form-label">Senha</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="inputSenha"
+                                placeholder="Mínimo 6 caracteres" required minlength="6">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleSenha">
+                                👁️
+                            </button>
+                        </div>
+                        <div id="passwordStrength" class="mt-2"></div>
+                    </div>
+
+                    <!-- Campo Confirmar Senha -->
+                    <div class="mb-4">
+                        <label for="inputConfirmaSenha" class="form-label">Confirme sua Senha</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="inputConfirmaSenha"
+                                placeholder="Digite novamente sua senha" required minlength="6">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmaSenha">
+                                👁️
+                            </button>
+                        </div>
+                        <div id="passwordMatch" class="mt-2"></div>
+                    </div>
+
+                    <!-- Botão de Submit -->
+                    <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+                </form>
+
+                <!-- Link para login -->
+                <div class="mt-3 text-center">
+                    <p class="mb-0">Já tem conta? <a href="index.html" class="text-decoration-none">Faça login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS e dependências -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous">
+        </script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tipoDocumento = document.getElementById("tipoDocumento");
+            const labelDocumento = document.getElementById("labelDocumento");
+            const inputDocumento = document.getElementById("inputDocumento");
+
+            let cleave = new Cleave(inputDocumento, {
+                delimiters: ['.', '.', '-'],
+                blocks: [3, 3, 3, 2],
+                numericOnly: true
+            });
+
+            tipoDocumento.addEventListener("change", function () {
+                cleave.destroy();
+                if (tipoDocumento.value === "cpf") {
+                    labelDocumento.textContent = "CPF";
+                    cleave = new Cleave(inputDocumento, {
+                        delimiters: ['.', '.', '-'],
+                        blocks: [3, 3, 3, 2],
+                        numericOnly: true
+                    });
+                    inputDocumento.placeholder = "000.000.000-00";
+                } else {
+                    labelDocumento.textContent = "RG";
+                    cleave = new Cleave(inputDocumento, {
+                        delimiters: ['.'],
+                        blocks: [2, 3, 3, 1],
+                        numericOnly: true
+                    });
+                    inputDocumento.placeholder = "00.000.000-0";
+                }
+                inputDocumento.classList.remove("valido", "invalido");
+                labelDocumento.classList.remove("label-valido", "label-invalido");
+            });
+
+            inputDocumento.addEventListener("input", function () {
+                const documento = inputDocumento.value.replace(/\D/g, '');
+                if (tipoDocumento.value === "cpf") {
+                    if (!validarCPF(documento)) {
+                        labelDocumento.textContent = "CPF inválido";
+                        inputDocumento.classList.add("invalido");
+                        inputDocumento.classList.remove("valido");
+                        labelDocumento.classList.add("label-invalido");
+                        labelDocumento.classList.remove("label-valido");
+                    } else {
+                        labelDocumento.textContent = "CPF válido";
+                        inputDocumento.classList.add("valido");
+                        inputDocumento.classList.remove("invalido");
+                        labelDocumento.classList.add("label-valido");
+                        labelDocumento.classList.remove("label-invalido");
+                    }
+                } else {
+                    if (!validarRG(documento)) {
+                        labelDocumento.textContent = "RG inválido";
+                        inputDocumento.classList.add("invalido");
+                        inputDocumento.classList.remove("valido");
+                        labelDocumento.classList.add("label-invalido");
+                        labelDocumento.classList.remove("label-valido");
+                    } else {
+                        labelDocumento.textContent = "RG válido";
+                        inputDocumento.classList.add("valido");
+                        inputDocumento.classList.remove("invalido");
+                        labelDocumento.classList.add("label-valido");
+                        labelDocumento.classList.remove("label-invalido");
+                    }
+                }
+            });
+        });
+
+        function validarCPF(cpf) {
+            if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+            let soma = 0, resto;
+            for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i - 1]) * (11 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf[9])) return false;
+            soma = 0;
+            for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i - 1]) * (12 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            return resto === parseInt(cpf[10]);
+        }
+
+        function validarRG(rg) {
+            return rg.length >= 7 && rg.length <= 9;
+        }
+
+        document.getElementById("toggleSenha").addEventListener("click", function () {
+            let inputSenha = document.getElementById("inputSenha");
+            inputSenha.type = inputSenha.type === "password" ? "text" : "password";
+        });
+
+        document.getElementById("toggleConfirmaSenha").addEventListener("click", function () {
+            let inputConfirmaSenha = document.getElementById("inputConfirmaSenha");
+            inputConfirmaSenha.type = inputConfirmaSenha.type === "password" ? "text" : "password";
+        });
+
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let requirements = {
+                length12: password.length >= 12,
+                length8: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+
+            strength = Object.values(requirements).filter(Boolean).length;
+
+            let strengthText = "Fraca";
+            let color = "red";
+
+            if (strength > 3) {
+                strengthText = "Média";
+                color = "orange";
+            }
+            if (strength > 5) {
+                strengthText = "Forte";
+                color = "green";
+            }
+
+            return { strengthText, color, requirements };
+        }
+
+        document.getElementById("inputSenha").addEventListener("input", function () {
+            let password = this.value;
+            let result = checkPasswordStrength(password);
+            let passwordStrengthDiv = document.getElementById("passwordStrength");
+
+            passwordStrengthDiv.innerHTML = `<strong style='color: ${result.color}'>${result.strengthText}</strong>`;
+        });
+
+        document.getElementById("inputConfirmaSenha").addEventListener("input", function () {
+            let confirmPassword = this.value;
+            let password = document.getElementById("inputSenha").value;
+            let passwordMatchDiv = document.getElementById("passwordMatch");
+
+            if (confirmPassword === password && confirmPassword !== "") {
+                passwordMatchDiv.innerHTML = "<strong style='color: green'>Senhas coincidem</strong>";
+            } else {
+                passwordMatchDiv.innerHTML = "<strong style='color: red'>Senhas não coincidem</strong>";
+            }
+        });
+
+        function validateEmail(email) {
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailPattern.test(email);
+        }
+
+        document.getElementById("inputEmail").addEventListener("input", function () {
+            let email = this.value;
+            let emailValidationDiv = document.getElementById("emailValidation");
+
+            if (validateEmail(email)) {
+                emailValidationDiv.innerHTML = "<strong style='color: green'>Email válido</strong>";
+            } else {
+                emailValidationDiv.innerHTML = "<strong style='color: red'>Email inválido</strong>";
+            }
+        });
+
+        document.getElementById("inputNome").addEventListener("input", function () {
+            let nome = this.value;
+
+            nome = nome.replace(/\s+/g, ' ').trimStart();
+
+            nome = nome.replace(/\b\w/g, (char) => char.toUpperCase());
+
+            this.value = nome;
+
+            let nameValidationDiv = document.getElementById("nameValidation");
+            let nameParts = nome.trim().split(" ");
+            if (nameParts.length < 2) {
+                nameValidationDiv.innerHTML = "<strong style='color: red'>Digite nome e sobrenome</strong>";
+            } else {
+                nameValidationDiv.innerHTML = "<strong style='color: green'>Nome válido</strong>";
+            }
+        });
+
+        document.getElementById("inputNascimento").addEventListener("input", function () {
+        let dataNascimento = new Date(this.value);
+        let hoje = new Date();
+        let idade = hoje.getFullYear() - dataNascimento.getFullYear();
+        let nascimentoValidationDiv = document.getElementById("nascimentoValidation");
+
+        // Ajusta a idade se o aniversário ainda não ocorreu no ano atual
+        let mesAtual = hoje.getMonth();
+        let mesNascimento = dataNascimento.getMonth();
+        if (mesAtual < mesNascimento || (mesAtual === mesNascimento && hoje.getDate() < dataNascimento.getDate())) {
+            idade--;
+        }
+
+        if (isNaN(dataNascimento)) {
+            nascimentoValidationDiv.innerHTML = "<strong style='color: red'>Data inválida</strong>";
+        } else if (idade < 12) {
+            nascimentoValidationDiv.innerHTML = "<strong style='color: red'>Você deve ter pelo menos 12 anos</strong>";
+        } else if (idade > 120) {
+            nascimentoValidationDiv.innerHTML = "<strong style='color: red'>Idade inválida</strong>";
+        } else {
+            nascimentoValidationDiv.innerHTML = "<strong style='color: green'>Data válida</strong>";
+        }
+    });
+
+    </script>
+</body>
+
+</html>
