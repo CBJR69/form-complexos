@@ -27,8 +27,7 @@ Este repositório contém um **formulário de cadastro** simples, estilizado com
 1. **Clone este repositório:**
 
    ```sh
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   ```
+   git clone https://github.com/CBJR69/form-complexos.git
 
 2. **Abra o arquivo `index.html` em um navegador.**
 3. **Navegue até a página de cadastro e preencha o formulário.**
@@ -39,8 +38,9 @@ Este repositório contém um **formulário de cadastro** simples, estilizado com
 
 Experimente o projeto online:
 
-🔗 [Formulários Unificados](https://form-unif.netlify.app/)
+🔗 [Formulários Unificados](https://form-comp.netlify.app/formulario_cadastro)
 
+**Utilizar Faça Login ou Criar nova conta para ver todas as funcionalidades**
 ---
 
 ## 🎨 Estilização
